@@ -1,6 +1,6 @@
 # East Zone DSTA-DSO Robotics Challenge 2019
 
-Contributers: Jonathan Loh (8059A), Aloysius Wong (8059X)
+Contributers: Jonathan Loh (8059A), Aloysius Wong (8059X)  
 Robot built by: Marcus Wong (8059A), Jaren Chen (8059A), Ng Zhi Kang (8059A)
 
 Challenge Site can be found at: https://sites.google.com/vjc.sg/ez-robotics-challenge-2019/home
