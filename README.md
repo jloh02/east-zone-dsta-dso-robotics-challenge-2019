@@ -24,3 +24,15 @@ Challenge Site can be found at: https://sites.google.com/vjc.sg/ez-robotics-chal
   * `dropCube`, `pickupCube`: Does what it says
 * `display.cpp`: All code to display a timer, start button and log files
 * `autonomous.cpp`: Driver program
+
+## Colour Map
+| Position | Angle | Colour
+| --- | --- | --- |
+|1|0|Red|
+|2|45|Yellow|
+|3|90|Green|
+|4|135|Orange|
+|5|180|Pink|
+|6|225|Blue|
+|7|270|Purple|
+|8|315|Red, Blue|
