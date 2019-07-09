@@ -8,10 +8,12 @@ set<int> sorted;
 int cycleStart = 0;
 bool cubeInFClaw = false; //Ensure pickup using front claw
 
+ADIDigitalOut offset_piston(1, !cubeInFClaw);
+ADIDigitalOut drop_piston(2, false);
+
 void autonomous() {
   Task armTask(armControl);
-  ADIDigitalOut offset_piston(1, !cubeInFClaw);
-  ADIDigitalOut drop_piston(2, false);
+  Task visionTask(getLargest);
   int color = 0, prevColor;
 
   start:
@@ -29,7 +31,7 @@ void autonomous() {
     }
     else{
       prevColor = color;
-      color = getColor(drop_piston);
+      color = getColor();
 
       if(nearestPos == color && firstPick) {
         sorted.insert(color);

@@ -9,6 +9,7 @@
 #define encdPerDeg 7.6348039215686274502823529411765
 
 double armTarget = 0;  //In degrees
+int backclaw, frontclaw;
 
 #define kP 2.0
 #define kD 0.6
@@ -70,12 +71,55 @@ int getNearestPos(){
   return nearestPos;
 }
 
-int getColor(ADIDigitalOut drop_piston){
-  drop_piston.set_value(true);
+int getColor(){
+  if(debugMode||manualColor) {
+    int retVal;
+    cin >> retVal;
+    return retVal;
+  }
+  if(cubeInFClaw) return backclaw;
+  return frontclaw;
+}
 
-  int retVal;
-  if(debugMode||manualColor) cin >> retVal;
-  return retVal;
+void getLargest (void * ignore){
+  Vision vision(8);
+  bool leftclaw = true;
+  bool doublecube = true;
+
+  while (true){
+    vision_object_s_t obj1 = vision.get_by_size(0);
+    vision_object_s_t obj2 = vision.get_by_size(1);
+    vision_object_s_t obj3 = vision.get_by_size(2);
+    // Gets the largest object
+    plog("Vision: " + to_string(obj1.signature));
+    plog("Vision2: " + to_string(obj2.signature));
+    plog("Vision3: " + to_string(obj3.signature));
+    plog("cubeInFClaw: " + to_string(cubeInFClaw));
+    if(cubeInFClaw) plog("Color: " + to_string(backclaw));
+    else plog("Color: " + to_string(frontclaw));
+    plog("Vision Mid: " + to_string(obj1.x_middle_coord));
+
+
+     doublecube = (obj3.signature < 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
+
+     if (obj1.x_middle_coord < 150)
+    {
+      backclaw = obj1.signature;
+      if (doublecube)
+        frontclaw = 8;
+      else
+       frontclaw = obj2.signature;
+    }
+    else if (obj1.x_middle_coord < 315)
+    {
+      frontclaw = obj1.signature;
+      if (doublecube)
+        backclaw = 8;
+       else
+        backclaw = obj2.signature;
+    }
+    delay(500);
+  }
 }
 
 void dropCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston){

@@ -9,7 +9,8 @@ extern set<int> sorted;
 void armControl(void * ignore);
 void setArm(int posNum);
 int getNearestPos();
-int getColor(ADIDigitalOut drop_piston);
+int getColor();
+void getLargest(void * ignore);
 
 void dropCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston);
 void pickupCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston);
