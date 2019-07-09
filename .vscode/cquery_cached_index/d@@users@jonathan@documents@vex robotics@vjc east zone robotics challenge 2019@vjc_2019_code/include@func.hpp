@@ -7,9 +7,10 @@
 extern bool cubeInFClaw;
 extern set<int> sorted;
 void armControl(void * ignore);
+void getLargest(void * ignore);
 void setArm(int posNum);
 int getNearestPos();
-int getColor(ADIDigitalOut drop_piston);
+int getColor();
 
 void dropCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston);
 void pickupCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston);
