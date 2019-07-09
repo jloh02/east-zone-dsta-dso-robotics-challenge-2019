@@ -86,10 +86,10 @@ int getColor()
     return frontclaw;
 }
 
-void getLarget(void * ignore){
+void getLargest(void * ignore){
   bool leftclaw = true;
- bool doublecube = true;
- int retVal;
+  bool doublecube = true;
+  int retVal;
   while (true)
   {
     vision_object_s_t obj1 = vision.get_by_size(0);
