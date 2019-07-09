@@ -99,7 +99,6 @@ void getLargest (void * ignore){
     else plog("Color: " + to_string(frontclaw));
     plog("Vision Mid: " + to_string(obj1.x_middle_coord));
 
-
      doublecube = (obj3.signature < 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
 
      if (obj1.x_middle_coord < 150)
