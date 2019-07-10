@@ -4,9 +4,9 @@
 #include "display.hpp"
 
 #define debugMode false
-#define manualColor true
+#define manualColor false
 
-#define encdPerDeg 7.6348039215686274502823529411765
+#define encdPerDeg 7.549972766884531589723660130719
 
 double armTarget = 0;  //In degrees
 int backclaw, frontclaw;
@@ -39,6 +39,8 @@ void armControl(void * ignore){
     else power = targetPower;
 
     oldError = error;
+
+    if(power > 60) power = 60;
     arm1.move(power);
     arm2.move(power);
     delay(25);
@@ -77,7 +79,11 @@ int getColor(){
     cin >> retVal;
     return retVal;
   }
-  if(cubeInFClaw) return backclaw;
+  if(cubeInFClaw) {
+    while(backclaw == 255) delay(25);
+    return backclaw;
+  }
+  while(frontclaw == 255) delay(25);
   return frontclaw;
 }
 
@@ -91,43 +97,48 @@ void getLargest (void * ignore){
     vision_object_s_t obj2 = vision.get_by_size(1);
     vision_object_s_t obj3 = vision.get_by_size(2);
     // Gets the largest object
-    plog("Vision: " + to_string(obj1.signature));
+    /*plog("Vision: " + to_string(obj1.signature));
     plog("Vision2: " + to_string(obj2.signature));
     plog("Vision3: " + to_string(obj3.signature));
     plog("cubeInFClaw: " + to_string(cubeInFClaw));
     if(cubeInFClaw) plog("Color: " + to_string(backclaw));
     else plog("Color: " + to_string(frontclaw));
-    plog("Vision Mid: " + to_string(obj1.x_middle_coord));
+    plog("Vision Mid: " + to_string(obj1.x_middle_coord));*/
 
-     doublecube = (obj3.signature < 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
+    //plog("Vision: " + to_string(obj1.signature));
 
-     if (obj1.x_middle_coord < 150)
-    {
-      backclaw = obj1.signature;
-      if (doublecube)
-        frontclaw = 8;
-      else
-       frontclaw = obj2.signature;
-    }
-    else if (obj1.x_middle_coord < 315)
+    doublecube = (obj3.signature != 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
+    if(doublecube) plog("Aloy sucks");
+
+    if (obj1.x_middle_coord < 150)
     {
       frontclaw = obj1.signature;
       if (doublecube)
-        backclaw = 8;
-       else
+        if(obj2.signature == 3 || obj2.signature == 2) backclaw = 7;
+        else backclaw = 8;
+      else
         backclaw = obj2.signature;
     }
-    delay(500);
+    else if (obj1.x_middle_coord < 315)
+    {
+      backclaw = obj1.signature;
+      if (doublecube)
+        if(obj2.signature == 3 || obj2.signature == 2) frontclaw = 7;
+        else frontclaw = 8;
+      else
+       frontclaw = obj2.signature;
+    }
+    delay(25);
   }
 }
 
 void dropCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston){
-  offset_piston.set_value(cubeInFClaw);
-  if(cubeInFClaw) plog("Pushed to front");
+  offset_piston.set_value(!cubeInFClaw);
+  if(!cubeInFClaw) plog("Pushed to front");
   else plog("Pushed to back");
-  delay(300);
+  delay(800);
   drop_piston.set_value(true);
-  delay(300);
+  delay(700);
   if(cubeInFClaw){
     clawF.move(-80);
     delay(500);
@@ -141,15 +152,16 @@ void dropCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston){
     plog("Back Claw Open");
   }
   drop_piston.set_value(false);
-  delay(300);
+  delay(700);
 }
 
 void pickupCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston){
-  offset_piston.set_value(!cubeInFClaw);
-  if(!cubeInFClaw) plog("Pushed to front");
-  else plog("Pushed to back");
+  //offset_piston.set_value(cubeInFClaw);
+  //if(cubeInFClaw) plog("Pushed to front");
+  //else plog("Pushed to back");
+  //delay(800);
   drop_piston.set_value(true);
-  delay(300);
+  delay(700);
   if(!cubeInFClaw){
     clawF.move(80);
     delay(500);
@@ -163,5 +175,5 @@ void pickupCube(ADIDigitalOut drop_piston, ADIDigitalOut offset_piston){
     plog("Back Claw Close");
   }
   drop_piston.set_value(false);
-  delay(300);
+  delay(700);
 }

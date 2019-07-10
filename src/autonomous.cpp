@@ -30,8 +30,11 @@ void autonomous() {
       goto start;
     }
     else{
+      offset_piston.set_value(cubeInFClaw);
+      delay(800);
       prevColor = color;
       color = getColor();
+      plog("Color Input: " + to_string(color));
 
       if(nearestPos == color && firstPick) {
         sorted.insert(color);
