@@ -31,8 +31,8 @@ Challenge Site can be found at: https://sites.google.com/vjc.sg/ez-robotics-chal
 |1|0|Red|
 |2|45|Yellow|
 |3|90|Green|
-|4|135|Orange|
-|5|180|Dark Blue|
-|6|225|Blue|
-|7|270|Purple|
+|4|135|Purple|
+|5|180|Blue|
+|6|225|Pink|
+|7|270|Green, Yellow|
 |8|315|Red, Blue|
