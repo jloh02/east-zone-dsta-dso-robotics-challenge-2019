@@ -19,7 +19,7 @@ Challenge Site can be found at: https://sites.google.com/vjc.sg/ez-robotics-chal
   * `kP`, `kD`: Specifies PD constants for base
   * `armControl`: Task to control base
   * `setArm`: Set target for base to move to
-  * `getNearestPos`: Used when blocks have reached 1 cycle and not all have been sorted. Uses a set to determine which blocks have not been sorted and returns position of the nearest block 
+  * `getNearestPos`: Used when blocks have reached 1 cycle and not all have been sorted. Uses a set to determine which blocks have not been sorted and returns position of the nearest block
   * `getColor`: Based on cubeInFClaw, determine which vision sensor to use (ie the opposite of cubeInFClaw) and return the position where the cube is to be placed
   * `dropCube`, `pickupCube`: Does what it says
 * `display.cpp`: All code to display a timer, start button and log files
@@ -29,10 +29,10 @@ Challenge Site can be found at: https://sites.google.com/vjc.sg/ez-robotics-chal
 | Position | Angle | Colour
 | --- | --- | --- |
 |1|0|Red|
-|2|45|Yellow|
+|2|45|Orange|
 |3|90|Green|
-|4|135|Purple|
+|4|135|Yellow|
 |5|180|Blue|
-|6|225|Pink|
+|6|225|Purple|
 |7|270|Green, Yellow|
 |8|315|Red, Blue|
