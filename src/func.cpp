@@ -4,15 +4,15 @@
 #include "display.hpp"
 
 #define debugMode false
-#define manualColor false
+#define manualColor true
 
-#define encdPerDeg 7.549972766884531589723660130719
+#define encdPerDeg 7.5923883442265795200030065359478
 
 double armTarget = 0;  //In degrees
 int backclaw, frontclaw;
 
-#define kP 2.0
-#define kD 0.6
+#define kP 4.5
+#define kD 6.0
 
 Motor arm1(1,E_MOTOR_GEARSET_18,false,E_MOTOR_ENCODER_DEGREES);
 Motor arm2(20,E_MOTOR_GEARSET_18,false,E_MOTOR_ENCODER_DEGREES);
@@ -41,6 +41,10 @@ void armControl(void * ignore){
     oldError = error;
 
     if(power > 60) power = 60;
+    if(power < -60) power = -60;
+
+    if(power !=0 && fabs(power) < 10) printf("%f\n", power);
+
     arm1.move(power);
     arm2.move(power);
     delay(25);
