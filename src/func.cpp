@@ -10,6 +10,7 @@
 
 double armTarget = 0;  //In degrees
 int backclaw, frontclaw;
+bool reached = false;
 
 #define kP 4.5
 #define kD 6.0
@@ -30,6 +31,8 @@ void armControl(void * ignore){
     while(error > 180) error -= 360;
     while(error < -180) error += 360;
 
+    reached = fabs(error) <= 1;
+
     double targetPower = error*kP + (error-oldError)*kD;
 
     if(fabs(targetPower-power) > 8){
@@ -43,7 +46,7 @@ void armControl(void * ignore){
     if(power > 60) power = 60;
     if(power < -60) power = -60;
 
-    if(power !=0 && fabs(power) < 10) printf("%f\n", power);
+    //if(power !=0 && fabs(power) < 10) printf("%f\n", power);
 
     arm1.move(power);
     arm2.move(power);
@@ -53,11 +56,12 @@ void armControl(void * ignore){
 
 void setArm(int posNum){
   armTarget = (posNum-1) * 45;
+  delay(100);
   double time = millis();
   if(debugMode) delay(1000);
-  else while(fabs((double)(armTarget - (arm1.get_position()+arm2.get_position())/2/encdPerDeg)) > 8 && millis()-time < 3000) {
-    delay(25);
-  }
+  //else while(fabs((double)(armTarget - (arm1.get_position()+arm2.get_position())/2/encdPerDeg)) > 8 )
+  else while(!reached && millis()-time < 3000) delay(25);
+
   plog("Arm position: "+to_string(armTarget));
 }
 
@@ -118,7 +122,7 @@ void getLargest (void * ignore){
     //doublecube = (obj3.signature != 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
     //if(doublecube) plog("Aloy sucks");
 
-    if (obj1.x_middle_coord < 140)
+    if (obj1.x_middle_coord < 110)
     {
       frontclaw = obj1.signature;
     /*  if (doublecube)

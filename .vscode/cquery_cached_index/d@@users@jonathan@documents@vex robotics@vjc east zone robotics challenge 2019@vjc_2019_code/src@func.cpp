@@ -4,12 +4,13 @@
 #include "display.hpp"
 
 #define debugMode false
-#define manualColor true
+#define manualColor false
 
 #define encdPerDeg 7.5923883442265795200030065359478
 
 double armTarget = 0;  //In degrees
 int backclaw, frontclaw;
+bool reached = false;
 
 #define kP 4.5
 #define kD 6.0
@@ -30,6 +31,8 @@ void armControl(void * ignore){
     while(error > 180) error -= 360;
     while(error < -180) error += 360;
 
+    reached = fabs(error) <= 1;
+
     double targetPower = error*kP + (error-oldError)*kD;
 
     if(fabs(targetPower-power) > 8){
@@ -43,7 +46,7 @@ void armControl(void * ignore){
     if(power > 60) power = 60;
     if(power < -60) power = -60;
 
-    if(power !=0 && fabs(power) < 10) printf("%f\n", power);
+    //if(power !=0 && fabs(power) < 10) printf("%f\n", power);
 
     arm1.move(power);
     arm2.move(power);
@@ -53,8 +56,12 @@ void armControl(void * ignore){
 
 void setArm(int posNum){
   armTarget = (posNum-1) * 45;
+  delay(100);
+  double time = millis();
   if(debugMode) delay(1000);
-  else while(fabs((double)(armTarget - (arm1.get_position()+arm2.get_position())/2/encdPerDeg)) > 5) delay(25);
+  //else while(fabs((double)(armTarget - (arm1.get_position()+arm2.get_position())/2/encdPerDeg)) > 8 )
+  else while(!reached && millis()-time < 3000) delay(25);
+
   plog("Arm position: "+to_string(armTarget));
 }
 
@@ -84,10 +91,11 @@ int getColor(){
     return retVal;
   }
   if(cubeInFClaw) {
-    while(backclaw == 255) delay(25);
+    //while(backclaw == 255) delay(25);
+    if(backclaw == 255/* || sorted.find(backclaw) != sorted.end()*/) return 8;
     return backclaw;
   }
-  while(frontclaw == 255) delay(25);
+  if(frontclaw == 255/* || sorted.find(frontclaw) != sorted.end()*/) return 8;
   return frontclaw;
 }
 
@@ -101,35 +109,35 @@ void getLargest (void * ignore){
     vision_object_s_t obj2 = vision.get_by_size(1);
     vision_object_s_t obj3 = vision.get_by_size(2);
     // Gets the largest object
-    /*plog("Vision: " + to_string(obj1.signature));
-    plog("Vision2: " + to_string(obj2.signature));
-    plog("Vision3: " + to_string(obj3.signature));
-    plog("cubeInFClaw: " + to_string(cubeInFClaw));
-    if(cubeInFClaw) plog("Color: " + to_string(backclaw));
-    else plog("Color: " + to_string(frontclaw));
-    plog("Vision Mid: " + to_string(obj1.x_middle_coord));*/
+    //plog("Vision: " + to_string(obj1.signature));
+    //plog("Vision2: " + to_string(obj2.signature));
+    // plog("Vision3: " + to_string(obj3.signature));
+    // plog("cubeInFClaw: " + to_string(cubeInFClaw));
+    // if(cubeInFClaw) plog("Color: " + to_string(backclaw));
+    // else plog("Color: " + to_string(frontclaw));
+    // plog("Vision Mid: " + to_string(obj1.x_middle_coord));
 
     //plog("Vision: " + to_string(obj1.signature));
 
-    doublecube = (obj3.signature != 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
-    if(doublecube) plog("Aloy sucks");
+    //doublecube = (obj3.signature != 255 && fabs(obj1.x_middle_coord - obj2.x_middle_coord) > 40);
+    //if(doublecube) plog("Aloy sucks");
 
-    if (obj1.x_middle_coord < 150)
+    if (obj1.x_middle_coord < 110)
     {
       frontclaw = obj1.signature;
-      if (doublecube)
+    /*  if (doublecube)
         if(obj2.signature == 3 || obj2.signature == 2) backclaw = 7;
         else backclaw = 8;
-      else
+      else*/
         backclaw = obj2.signature;
     }
-    else if (obj1.x_middle_coord < 315)
+    else //if (obj1.x_middle_coord < 315)
     {
       backclaw = obj1.signature;
-      if (doublecube)
+  /*    if (doublecube)
         if(obj2.signature == 3 || obj2.signature == 2) frontclaw = 7;
         else frontclaw = 8;
-      else
+      else*/
        frontclaw = obj2.signature;
     }
     delay(25);
