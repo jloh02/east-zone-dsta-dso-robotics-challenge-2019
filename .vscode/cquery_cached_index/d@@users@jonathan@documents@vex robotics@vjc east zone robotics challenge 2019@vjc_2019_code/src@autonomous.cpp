@@ -21,6 +21,7 @@ void autonomous() {
     int nearestPos = getNearestPos();
     setArm(nearestPos);
     cycleStart = nearestPos;
+    delay(150);
     //printf("Inserting %d\n",nearestPos);
   colorCheck:
     if(color == cycleStart){
@@ -46,7 +47,7 @@ void autonomous() {
         if(firstPick) goto skipDrop;
         dropCube(drop_piston, offset_piston);
         sorted.insert(prevColor);
-        if(sorted.size() == 7) goto endProg;
+        if(sorted.size() == 8) goto endProg;
 
         skipDrop:
           cubeInFClaw = !cubeInFClaw;
