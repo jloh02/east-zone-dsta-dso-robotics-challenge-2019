@@ -1,0 +1,5 @@
+include/display/** linguist-vendored
+include/okapi/** linguist-vendored
+include/pros/** linguist-vendored
+common.mk linguist-vendored
+Makefile linguist-vendored
